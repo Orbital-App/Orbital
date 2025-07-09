@@ -28,3 +28,6 @@ Animatie: [Lottie?](https://lottiefiles.com/)<br>
 ## Run app
 Download Expo Go op je telefoon, of installeer [Android Virtual Device (AVD) en Android SDK](https://developer.android.com/studio) als je het op je PC wilt runnen.<br>
 Doe dan ```npm start```
+
+## Design
+We gebruiken Figma voor het design. Je kunt het huidige design [hier](https://www.figma.com/proto/fWhNZn8hZoLgM31EXnUJDz/Orbital?node-id=1-183&p=f&t=U7aaOaZebKMwMM80-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A5&show-proto-sidebar=1) bekijken.
