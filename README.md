@@ -23,3 +23,8 @@ Animatie: [Lottie?](https://lottiefiles.com/)<br>
 
 /data
   - elements.json
+
+
+## Run app
+Download Expo Go op je telefoon, of installeer [Android Virtual Device (AVD) en Android SDK](https://developer.android.com/studio) als je het op je PC wilt runnen.<br>
+Doe dan ```npm start```
