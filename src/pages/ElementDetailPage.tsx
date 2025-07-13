@@ -39,7 +39,7 @@ export default function ElementDetail() {
   return (
     <>
       <BackButton />
-      <div className="grid grid-cols-2 gap-[40px] mx-[80px] mt-[60px]">
+      <div className="grid grid-cols-2 gap-[40px] mx-[80px] my-[60px]">
         <div className="">
           <h1 className="text-[64px] font-black">{element.name}</h1>
           <div className="flex items-center gap-[10px] mt-[-6px]">
