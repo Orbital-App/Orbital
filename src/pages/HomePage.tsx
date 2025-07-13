@@ -1,10 +1,8 @@
 import PeriodicTile from "../components/PeriodicTile";
 import elementsData from "../data/PeriodicTable_nl.json";
 
-
 export default function HomePage() {
   return (
-
     <div
       className="grid gap-[10px] mt-[47px] mx-[45px]"
       style={{
