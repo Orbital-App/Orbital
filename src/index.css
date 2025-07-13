@@ -10,3 +10,7 @@
 .h1, h2, h3 {
   font-family: "Inter", sans-serif !important;
 }
+
+.header-icons {
+  height: 28px !important;
+}
