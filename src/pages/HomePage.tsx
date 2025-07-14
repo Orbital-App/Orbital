@@ -4,7 +4,7 @@ import elementsData from "../data/PeriodicTable_nl.json";
 export default function HomePage() {
   return (
     <div
-      className="grid gap-[10px] mt-[47px] mx-[45px]"
+      className="grid gap-[10px] my-[47px] mx-[45px]"
       style={{
         gridTemplateColumns: "repeat(18, 110px)",
         gridAutoRows: "110px",

@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import SearchPage from "./pages/SearchPage";
 import SettingsPage from "./pages/SettingsPage";
 import FavoritesPage from "./pages/FavoritesPage";
+import PageNotFound from "./pages/404";
 
 // ROUTER
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/element/:symbol" element={<ElementDetail />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
     </>

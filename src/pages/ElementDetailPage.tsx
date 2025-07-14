@@ -39,7 +39,7 @@ export default function ElementDetail() {
   return (
     <>
       <BackButton />
-      <div className="grid grid-cols-2 gap-[40px] mx-[80px] my-[60px]">
+      <div className="grid grid-cols-2 gap-[40px] mx-[80px] mt-[60px] mb-[20px]">
         <div className="">
           <h1 className="text-[64px] font-black">{element.name}</h1>
           <div className="flex items-center gap-[10px] mt-[-6px]">
@@ -53,7 +53,7 @@ export default function ElementDetail() {
             {element.summary}
           </p>
 
-          <div className="my-[40px] text-[24px] font-display font-regular">
+          {/***<div className="my-[40px] text-[24px] font-display font-regular">
             <p>
               Symbool: <span className="text-[#5D5D5D]">{element.symbol}</span>
             </p>
@@ -80,9 +80,66 @@ export default function ElementDetail() {
               Ontdekt door:{" "}
               <span className="text-[#5D5D5D]">{element.discovered_by}</span>
             </p>
+          </div> ***/}
+
+          <div className="mt-[40px] mb-[50px] text-[24px] font-display font-regular max-w-[800px]">
+            <dl className="divide-y divide-gray-100">
+              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className=" font-medium  text-black">Symbool</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.symbol  || "Onbekend"}
+                </dd>
+              </div>
+
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="  font-medium  text-black">Atomaire massa</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.atomic_mass  || "Onbekend"} u 
+                </dd>
+              </div>
+
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="  font-medium  text-black">Dichtheid</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.density || "Onbekend"} g/cm3
+                </dd>
+              </div>
+
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="  font-medium  text-black">Uiterlijk</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.appearance || "Onbekend"}
+                </dd>
+              </div>
+
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="  font-medium  text-black">Smeltpunt</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.melt || "Onbekend"} K
+                </dd>
+              </div>
+
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="  font-medium  text-black">Kookpunt</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.boil || "Onbekend"} K
+                </dd>
+              </div>
+
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="  font-medium  text-black">Ontdekt door</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.discovered_by || "Onbekend"}
+                </dd>
+              </div>
+            </dl>
           </div>
 
-          <a href={`${element.source}`} target="_blank" rel="noopener noreferrer">
+          <a
+            href={`${element.source}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div className="inline-flex items-center cursor-pointer bg-[#3A73EE] text-white rounded-[10px] h-[60px]">
               <FontAwesomeIcon
                 icon={faArrowRight}
