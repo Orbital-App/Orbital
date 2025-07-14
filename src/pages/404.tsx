@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function PageNotFound() {
   return (
     <>
-      <div className="flex flex-col justify-center items-center h-[70vh]">
+      <div className="flex flex-col justify-center items-center h-[70vh] overflow-auto">
         <div className="relative text-center">
           <h1 className="mt-2 text-[64px] font-bold text-balance text-gray-900">
             Pagina niet gevonden

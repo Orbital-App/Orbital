@@ -7,6 +7,16 @@
   --font-header: "Inter", "sans-serif";
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 .h1, h2, h3 {
   font-family: "Inter", sans-serif !important;
 }

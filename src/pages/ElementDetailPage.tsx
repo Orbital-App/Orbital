@@ -4,9 +4,14 @@ import elementsData from "../data/PeriodicTable_nl.json";
 import "../components/PeriodicTile.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
+import AtomView from "../components/AtomView";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 
 export default function ElementDetail() {
   const { symbol } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imageAvailable, setImageAvailable] = useState(true);
   let category = "onbekend";
 
   const element = elementsData.elements.find((data) => {
@@ -36,8 +41,16 @@ export default function ElementDetail() {
   };
   const group = groupMap[category.toLowerCase()] || 10;
 
+  useEffect(() => {
+    if (group === 10) {
+      setImageAvailable(false);
+    } else {
+      setImageAvailable(true);
+    }
+  }, [group]);
+
   return (
-    <>
+    <div className="h-full overflow-auto">
       <BackButton />
       <div className="grid grid-cols-2 gap-[40px] mx-[80px] mt-[60px] mb-[20px]">
         <div className="">
@@ -84,17 +97,24 @@ export default function ElementDetail() {
 
           <div className="mt-[40px] mb-[50px] text-[24px] font-display font-regular max-w-[800px]">
             <dl className="divide-y divide-gray-100">
-              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className=" font-medium  text-black">Symbool</dt>
                 <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
-                  {element.symbol  || "Onbekend"}
+                  {element.symbol || "Onbekend"}
+                </dd>
+              </div>
+
+              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className=" font-medium  text-black">Atoomnummer</dt>
+                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                  {element.number || "Onbekend"}
                 </dd>
               </div>
 
               <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="  font-medium  text-black">Atomaire massa</dt>
                 <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
-                  {element.atomic_mass  || "Onbekend"} u 
+                  {element.atomic_mass || "Onbekend"} u
                 </dd>
               </div>
 
@@ -140,9 +160,9 @@ export default function ElementDetail() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <div className="inline-flex items-center cursor-pointer bg-[#3A73EE] text-white rounded-[10px] h-[60px]">
+            <div className="inline-flex items-center cursor-pointer bg-[#3A73EE] text-white rounded-[10px] h-[60px] mb-10">
               <FontAwesomeIcon
-                icon={faArrowRight}
+                icon={faArrowUpRightFromSquare}
                 className="text-[26px] ml-[24px] mr-[10px]"
               />
               <p className="text-[24px] font-header font-semibold mr-[24px]">
@@ -150,8 +170,75 @@ export default function ElementDetail() {
               </p>
             </div>
           </a>
+
+          {imageAvailable && (
+            <button onClick={() => setIsModalOpen(true)}>
+              <div className="inline-flex items-center cursor-pointer bg-[#5D5D5D] text-white rounded-[10px] h-[60px] ml-[20px]">
+                <FontAwesomeIcon
+                  icon={faArrowRight}
+                  className="text-[26px] ml-[24px] mr-[10px]"
+                />
+                <p className="text-[24px] font-header font-semibold mr-[24px]">
+                  Bekijk afbeelding
+                </p>
+              </div>
+            </button>
+          )}
+        </div>
+
+        <div className="px-[50px] mt-[40px]">
+          <AtomView shells={element.shells} />
+          <div className="flex gap-[20px] mt-[20px]">
+            <div className="flex items-center gap-[8px]">
+              <div className={`rounded-4xl bg-[#882a2a] w-[18px] h-[18px]`}></div>
+              <p className="font-light font-header text-[20px]">Proton</p>
+            </div>
+            <div className="flex items-center gap-[8px]">
+              <div className={`rounded-4xl bg-[#585858] w-[18px] h-[18px]`}></div>
+              <p className="font-light font-header text-[20px]">Neutron</p>
+            </div>
+            <div className="flex items-center gap-[8px]">
+              <div className={`rounded-4xl bg-[#457a88] w-[18px] h-[18px]`}></div>
+              <p className="font-light font-header text-[20px]">Elektron</p>
+            </div>
+          </div>
         </div>
       </div>
-    </>
+
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50"
+          onClick={() => setIsModalOpen(false)}
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <div
+            className="bg-white rounded-lg p-6 max-w-2xl max-h-full overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">
+                Afbeelding van {element.name}
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-4">
+              <img
+                src={element.image.url}
+                alt={element.image.title || element.name}
+                className="w-full h-auto rounded-lg"
+              />
+              <p className="text-gray-700">
+                Bron: {element.image.attribution || "onbekend"}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

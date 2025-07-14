@@ -36,7 +36,7 @@ function PeriodicTile({
     <>
       <Link to={`/element/${atomicNumber}`}>
       <div
-        className={`w-[110px] h-[110px] rounded-[10px] flex flex-col justify-between bg-g${group} text-white`}
+        className={`w-[110px] select-none h-[110px] rounded-[10px] flex flex-col justify-between bg-g${group} text-white`}
       >
         <div className="text-[20px] mt-[4px] ml-[10px] font-header text-left">{atomicNumber}</div>
 

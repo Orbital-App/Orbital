@@ -13,15 +13,19 @@ function App() {
   return (
     <>
       <Router>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchPage/>} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/element/:symbol" element={<ElementDetail />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
+        <div className="h-screen flex flex-col">
+          <Header />
+          <div className="flex-1 overflow-hidden">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/favorites" element={<FavoritesPage />} />
+              <Route path="/element/:symbol" element={<ElementDetail />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </div>
+        </div>
       </Router>
     </>
   );
