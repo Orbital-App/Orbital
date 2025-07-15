@@ -1,11 +1,32 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 function Header() {
+  const query = useQuery().get("q");
   const [searchText, setSearchText] = useState("Zoek");
+
+  useEffect(() => {
+    if (query) {
+      setSearchText(query);
+    } else {
+      setSearchText("Zoek");
+    }
+  }, [query]);
+
+  function handleMouseOver() {
+    if (query) {
+      setSearchText(query);
+    } else {
+      setSearchText("Zoek");
+    }
+  }
 
   return (
     <header className="header text-black px-[45px] h-[120px]">
@@ -16,7 +37,7 @@ function Header() {
           </h1>
         </Link>
         <div className="font-header text-[#5D5D5D] text-2xl ml-[75px]">
-          <form action={"/search"} method="get" className="flex items-center" onMouseOver={() => setSearchText("Naam, nummer of symbool")} onMouseLeave={() => setSearchText("Zoek")}>
+          <form action={"/search"} method="get" className="flex items-center" onMouseOver={() => setSearchText("Naam, nummer of symbool")} onMouseLeave={() => handleMouseOver()}>
             <FontAwesomeIcon
               icon={faMagnifyingGlass}
               className="header-icons mr-[10px]"
@@ -45,3 +66,4 @@ function Header() {
 }
 
 export default Header;
+

@@ -12,22 +12,19 @@ function PeriodicTile({
   name,
   symbol,
   atomicNumber,
-}: PeriodicTileProps)
-
-{
+}: PeriodicTileProps) {
   // Map category to a group number for styling
   const groupMap: { [key: string]: number } = {
-    "alkalimetaal": 1,
-    "alkalisch aarde metaal": 2,
-    "overgangsmetaal": 3,
-    "metaal na de overdracht": 4,
-    "metalloïde": 5,
-    "diatomee niet -metaal": 6,
-    "polyatomisch niet -metaal": 6,
-    "edelgas": 7,
-    "lanthanide": 8,
-    "actinide": 9,
-    "onbekend": 10,
+    alkalimetaal: 1,
+    aardalkalimetaal: 2,
+    overgangsmetaal: 3,
+    hoofdgroepmetaal: 4,
+    metalloïde: 5,
+    "niet-metalen": 6,
+    edelgas: 7,
+    lanthanide: 8,
+    actinide: 9,
+    onbekend: 10,
   };
 
   const group = groupMap[category.toLowerCase()] || 10; // Als niet gevonden, groep = 10
@@ -35,19 +32,23 @@ function PeriodicTile({
   return (
     <>
       <Link to={`/element/${atomicNumber}`}>
-      <div
-        className={`w-[110px] select-none h-[110px] rounded-[10px] flex flex-col justify-between bg-g${group} text-white`}
-      >
-        <div className="text-[20px] mt-[4px] ml-[10px] font-header text-left">{atomicNumber}</div>
+        <div
+          className={`w-[110px] select-none h-[110px] rounded-[10px] flex flex-col justify-between bg-g${group} text-white`}
+        >
+          <div className="text-[20px] mt-[4px] ml-[10px] font-header text-left">
+            {atomicNumber}
+          </div>
 
-        <div className="text-center mt-[-10px] mb-[4px]">
-          <div className="text-[48px] font-black font-header leading-none">
-            {symbol}
+          <div className="text-center mt-[-6px] mb-[4px]">
+            <div className="text-[48px] font-black font-header leading-none">
+              {symbol}
+            </div>
+          </div>
+
+          <div className="text-center text-[16px] font-display font-[700] mb-[7px]">
+            {name}
           </div>
         </div>
-
-        <div className="text-center text-[16px] font-display font-[700] mb-[7px]">{name}</div>
-      </div>
       </Link>
     </>
   );

@@ -7,11 +7,15 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import AtomView from "../components/AtomView";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
+import { faStar } from "@fortawesome/free-regular-svg-icons";
+import { getUserData, toggleFavorite } from "../utils/userData";
 
 export default function ElementDetail() {
+  const userData = getUserData();
   const { symbol } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageAvailable, setImageAvailable] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
   let category = "onbekend";
 
   const element = elementsData.elements.find((data) => {
@@ -25,15 +29,21 @@ export default function ElementDetail() {
   if (!element) {
     return <p className="mx-[80px] mt-[60px]">Geen element gevonden.</p>;
   }
+
+  useEffect(() => {
+    if (element) {
+      setIsFavorite(userData.favorites.includes(element.symbol));
+    }
+  }, [element]);
+
   category = element.category.toLowerCase();
   const groupMap: { [key: string]: number } = {
     alkalimetaal: 1,
-    "alkalisch aarde metaal": 2,
+    aardalkalimetaal: 2,
     overgangsmetaal: 3,
-    "metaal na de overdracht": 4,
+    hoofdgroepmetaal: 4,
     metalloïde: 5,
-    "diatomee niet -metaal": 6,
-    "polyatomisch niet -metaal": 6,
+    "niet-metalen": 6,
     edelgas: 7,
     lanthanide: 8,
     actinide: 9,
@@ -49,12 +59,31 @@ export default function ElementDetail() {
     }
   }, [group]);
 
+  function setFavorite() {
+    setIsFavorite(!isFavorite);
+    if (element) {
+      toggleFavorite(element.symbol);
+    }
+  }
+
   return (
     <div className="h-full overflow-auto">
       <BackButton />
       <div className="grid grid-cols-2 gap-[40px] mx-[80px] mt-[60px] mb-[20px]">
         <div className="">
-          <h1 className="text-[64px] font-black">{element.name}</h1>
+          <div className="flex items-center gap-[25px]">
+            <h1 className="text-[64px] font-black">{element.name}</h1>
+            <button onClick={() => setFavorite()} className="cursor-pointer">
+              {isFavorite ? (
+                <FontAwesomeIcon
+                  icon={faStar}
+                  className="mt-[8px] text-2xl text-yellow-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faStar} className="mt-[8px] text-2xl" />
+              )}
+            </button>
+          </div>
           <div className="flex items-center gap-[10px] mt-[-6px]">
             <div className={`rounded-4xl bg-g${group} w-[18px] h-[18px]`}></div>
             <p className="font-light font-header text-[20px]">
@@ -187,18 +216,26 @@ export default function ElementDetail() {
         </div>
 
         <div className="px-[50px] mt-[40px]">
-          <AtomView shells={element.shells} />
+          <div className="cursor-grab">
+            <AtomView shells={element.shells} />
+          </div>
           <div className="flex gap-[20px] mt-[20px]">
             <div className="flex items-center gap-[8px]">
-              <div className={`rounded-4xl bg-[#882a2a] w-[18px] h-[18px]`}></div>
+              <div
+                className={`rounded-4xl bg-[#882a2a] w-[18px] h-[18px]`}
+              ></div>
               <p className="font-light font-header text-[20px]">Proton</p>
             </div>
             <div className="flex items-center gap-[8px]">
-              <div className={`rounded-4xl bg-[#585858] w-[18px] h-[18px]`}></div>
+              <div
+                className={`rounded-4xl bg-[#585858] w-[18px] h-[18px]`}
+              ></div>
               <p className="font-light font-header text-[20px]">Neutron</p>
             </div>
             <div className="flex items-center gap-[8px]">
-              <div className={`rounded-4xl bg-[#457a88] w-[18px] h-[18px]`}></div>
+              <div
+                className={`rounded-4xl bg-[#457a88] w-[18px] h-[18px]`}
+              ></div>
               <p className="font-light font-header text-[20px]">Elektron</p>
             </div>
           </div>
@@ -221,7 +258,7 @@ export default function ElementDetail() {
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-600 hover:text-gray-900"
+                className="text-gray-600 hover:text-gray-900 cursor-pointer"
               >
                 ✕
               </button>

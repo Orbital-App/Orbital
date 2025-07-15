@@ -1,0 +1,14 @@
+{
+  "favorites": [],
+  "settings": {
+    "theme": "dark",
+    "language": "en",
+    "showAtomicNumber": true,
+    "showAtomicMass": true,
+    "showDensity": true,
+    "showMeltingPoint": true,
+    "showBoilingPoint": true,
+    "showDiscoveredBy": true,
+    "showAppearance": true
+  }
+}
