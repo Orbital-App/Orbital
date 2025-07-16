@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "electron": "electron .",
-    "start": "electron-forge start",
+    "start": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -20,6 +20,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@headlessui/react": "^2.2.4",
     "@react-three/drei": "^10.5.0",
     "@react-three/fiber": "^9.2.0",
     "@tailwindcss/postcss": "^4.1.11",
@@ -62,15 +63,26 @@
   },
   "config": {
     "forge": {
+      "packagerConfig": {
+        "asar": true
+      },
       "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "orbital",
+            "setupExe": "OrbitalSetup.exe",
+            "authors": "Tijs Hendriks",
+            "description": "Orbital is een interactieve app voor het periodiek systeem."
+          }
+        },
         {
           "name": "@electron-forge/maker-zip",
           "platforms": [
             "win32"
           ]
         }
-      ],
-      "publishers": []
+      ]
     }
   }
 }

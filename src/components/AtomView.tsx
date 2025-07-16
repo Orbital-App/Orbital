@@ -4,14 +4,14 @@ import { useRef } from "react";
 import * as THREE from "three";
 
 type Props = {
-  shells: number[]; // bijv. [2, 1]
+  shells: number[];
 };
 
 function ElectronRing({ count, radius }: { count: number; radius: number }) {
   const groupRef = useRef<THREE.Group>(null!);
 
   useFrame(({ clock }) => {
-    groupRef.current.rotation.y = clock.getElapsedTime() * 0.1;
+    groupRef.current.rotation.y = clock.getElapsedTime() * 0.2;
   });
 
   const elektronen = Array.from({ length: count }, (_, i) => {
@@ -80,10 +80,8 @@ export default function AtomView({ shells }: Props) {
       <pointLight position={[5, 5, 5]} />
       <OrbitControls />
 
-      {/* Kern */}
       <group>{kern}</group>
 
-      {/* Schillen */}
       {shells.map((electrons, i) => {
         const radius = 1.5 + i * 0.8;
         return (

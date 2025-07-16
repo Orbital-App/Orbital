@@ -8,15 +8,17 @@ import AtomView from "../components/AtomView";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
-import { getUserData, toggleFavorite } from "../utils/userData";
+import useFavorites from "../utils/useFavorites";
 
 export default function ElementDetail() {
-  const userData = getUserData();
   const { symbol } = useParams();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
   const [imageAvailable, setImageAvailable] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
   let category = "onbekend";
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
 
   const element = elementsData.elements.find((data) => {
     if (!symbol) return false;
@@ -27,14 +29,34 @@ export default function ElementDetail() {
   });
 
   if (!element) {
-    return <p className="mx-[80px] mt-[60px]">Geen element gevonden.</p>;
+    return (
+      <>
+        <div className="flex flex-col justify-center items-center h-[70vh] overflow-auto">
+          <div className="relative text-center">
+            <h1 className="mt-2 text-[64px] font-bold text-balance text-gray-900">
+              Element niet gevonden
+            </h1>
+            <button
+              onClick={() => window.history.back()}
+              className="mt-[40px] inline-flex items-center bg-[#3A73EE] text-white rounded-[10px] h-[60px] cursor-pointer"
+            >
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="text-[26px] ml-[24px] mr-[10px]"
+              />
+              <p className="text-[24px] font-header font-semibold mr-[24px]">
+                Ga terug
+              </p>
+            </button>
+          </div>
+        </div>
+      </>
+    );
   }
 
   useEffect(() => {
-    if (element) {
-      setIsFavorite(userData.favorites.includes(element.symbol));
-    }
-  }, [element]);
+    console.log("Favorieten:", favorites);
+  }, [favorites]);
 
   category = element.category.toLowerCase();
   const groupMap: { [key: string]: number } = {
@@ -60,9 +82,8 @@ export default function ElementDetail() {
   }, [group]);
 
   function setFavorite() {
-    setIsFavorite(!isFavorite);
     if (element) {
-      toggleFavorite(element.symbol);
+      toggleFavorite(element.number);
     }
   }
 
@@ -74,10 +95,10 @@ export default function ElementDetail() {
           <div className="flex items-center gap-[25px]">
             <h1 className="text-[64px] font-black">{element.name}</h1>
             <button onClick={() => setFavorite()} className="cursor-pointer">
-              {isFavorite ? (
+              {isFavorite(element.number) ? (
                 <FontAwesomeIcon
                   icon={faStar}
-                  className="mt-[8px] text-2xl text-yellow-500"
+                  className="mt-[10px] text-2xl text-yellow-500"
                 />
               ) : (
                 <FontAwesomeIcon icon={faStar} className="mt-[8px] text-2xl" />
@@ -94,35 +115,6 @@ export default function ElementDetail() {
           <p className="mt-[40px] font-display text-[26px] font-regular">
             {element.summary}
           </p>
-
-          {/***<div className="my-[40px] text-[24px] font-display font-regular">
-            <p>
-              Symbool: <span className="text-[#5D5D5D]">{element.symbol}</span>
-            </p>
-            <p>
-              Atomaire massa:{" "}
-              <span className="text-[#5D5D5D]">{element.atomic_mass} u</span>
-            </p>
-            <p>
-              Dichtheid:{" "}
-              <span className="text-[#5D5D5D]">{element.density} g/cm3</span>
-            </p>
-            <p>
-              Uiterlijk:{" "}
-              <span className="text-[#5D5D5D]">{element.appearance}</span>
-            </p>
-            <p>
-              Smeltpunt:{" "}
-              <span className="text-[#5D5D5D]">{element.melt} K</span>
-            </p>
-            <p>
-              Kookpunt: <span className="text-[#5D5D5D]">{element.boil} K</span>
-            </p>
-            <p>
-              Ontdekt door:{" "}
-              <span className="text-[#5D5D5D]">{element.discovered_by}</span>
-            </p>
-          </div> ***/}
 
           <div className="mt-[40px] mb-[50px] text-[24px] font-display font-regular max-w-[800px]">
             <dl className="divide-y divide-gray-100">
@@ -154,26 +146,39 @@ export default function ElementDetail() {
                 </dd>
               </div>
 
+              {element.appearance && (
+                <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="  font-medium  text-black">Uiterlijk</dt>
+                  <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                    {element.appearance || "Onbekend"}
+                  </dd>
+                </div>
+              )}
+
               <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="  font-medium  text-black">Uiterlijk</dt>
+                <dt className="  font-medium  text-black">Toestand</dt>
                 <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
-                  {element.appearance || "Onbekend"}
+                  {element.phase || "Onbekend"}
                 </dd>
               </div>
 
-              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="  font-medium  text-black">Smeltpunt</dt>
-                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
-                  {element.melt || "Onbekend"} K
-                </dd>
-              </div>
+              {element.appearance && (
+                <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="  font-medium  text-black">Smeltpunt</dt>
+                  <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                    {element.melt || "Onbekend"} K
+                  </dd>
+                </div>
+              )}
 
-              <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="  font-medium  text-black">Kookpunt</dt>
-                <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
-                  {element.boil || "Onbekend"} K
-                </dd>
-              </div>
+              {element.appearance && (
+                <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="  font-medium  text-black">Kookpunt</dt>
+                  <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
+                    {element.boil || "Onbekend"} K
+                  </dd>
+                </div>
+              )}
 
               <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="  font-medium  text-black">Ontdekt door</dt>
@@ -245,11 +250,19 @@ export default function ElementDetail() {
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50"
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => {
+            setIsClosing(true);
+            setTimeout(() => {
+              setIsModalOpen(false);
+              setIsClosing(false);
+            }, 150);
+          }}
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         >
           <div
-            className="bg-white rounded-lg p-6 max-w-2xl max-h-full overflow-auto"
+            className={`bg-white rounded-lg p-6 max-w-2xl max-h-full overflow-auto ${
+              isClosing ? "animate-popup-out" : "animate-popup-in"
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">
@@ -257,7 +270,13 @@ export default function ElementDetail() {
                 Afbeelding van {element.name}
               </h3>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => {
+                  setIsClosing(true);
+                  setTimeout(() => {
+                    setIsModalOpen(false);
+                    setIsClosing(false);
+                  }, 150);
+                }}
                 className="text-gray-600 hover:text-gray-900 cursor-pointer"
               >
                 ✕
