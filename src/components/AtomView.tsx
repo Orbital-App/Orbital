@@ -2,6 +2,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useRef } from "react";
 import * as THREE from "three";
+import useSettings from "../utils/useSettings";
 
 type Props = {
   shells: number[];
@@ -9,9 +10,19 @@ type Props = {
 
 function ElectronRing({ count, radius }: { count: number; radius: number }) {
   const groupRef = useRef<THREE.Group>(null!);
+  let rotationSpeed = 0.2;
+
+  const { settings } = useSettings();
+  if (settings.rotationSpeedElektrons === "slow") {
+    rotationSpeed = 0.2;
+  } else if (settings.rotationSpeedElektrons === "normal") {
+    rotationSpeed = 0.5;
+  } else if (settings.rotationSpeedElektrons === "fast") {
+    rotationSpeed = 1.0;
+  }
 
   useFrame(({ clock }) => {
-    groupRef.current.rotation.y = clock.getElapsedTime() * 0.2;
+    groupRef.current.rotation.y = clock.getElapsedTime() * rotationSpeed;
   });
 
   const elektronen = Array.from({ length: count }, (_, i) => {
@@ -39,8 +50,6 @@ function OrbitRing({ radius }: { radius: number }) {
     );
   }
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-  
 
   return (
     <primitive

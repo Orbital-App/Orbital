@@ -2,19 +2,13 @@ import { useState } from "react";
 import PeriodicTile from "../components/PeriodicTile";
 import elementsData from "../data/PeriodicTable_nl.json";
 import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
 } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import useSettings from "../utils/useSettings";
 
 type HomePageProps = {
   isFilterOpen: boolean;
@@ -54,13 +48,9 @@ export default function HomePage({
   setIsFilterOpen,
 }: HomePageProps) {
   const [isClosing, setIsClosing] = useState(false);
-  const [isFilterActive, setFilterActive] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedPhases, setSelectedPhases] = useState<string[]>([]);
-
-  function handleFilterClick() {
-    setFilterActive(true);
-  }
+  const { settings } = useSettings();
 
   return (
     <div
@@ -152,48 +142,54 @@ export default function HomePage({
         <>
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50"
-            onClick={() => {
-              setIsClosing(true);
-              setTimeout(() => {
-                setIsFilterOpen(false);
-                setIsClosing(false);
-              }, 150);
-            }}
+            onClick={
+              settings.enableAnimations
+                ? () => {
+                    setIsClosing(true);
+                    setTimeout(() => {
+                      setIsFilterOpen(false);
+                      setIsClosing(false);
+                    }, 150);
+                  }
+                : () => {
+                    setIsFilterOpen(false);
+                  }
+            }
             style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           >
             <div
               className={`bg-white rounded-lg p-6 max-w-2xl max-h-full min-w-[500px] overflow-auto ${
-                isClosing ? "animate-popup-out" : "animate-popup-in"
+                settings.enableAnimations
+                  ? isClosing
+                    ? "animate-popup-out"
+                    : "animate-popup-in"
+                  : ""
               }`}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-semibold">Filteropties</h3>
                 <button
-                  onClick={() => {
-                    setIsClosing(true);
-                    setTimeout(() => {
-                      setIsFilterOpen(false);
-                      setIsClosing(false);
-                    }, 150);
-                  }}
+                  onClick={
+                    settings.enableAnimations
+                      ? () => {
+                          setIsClosing(true);
+                          setTimeout(() => {
+                            setIsFilterOpen(false);
+                            setIsClosing(false);
+                          }, 150);
+                        }
+                      : () => {
+                          setIsFilterOpen(false);
+                        }
+                  }
                   className="text-gray-600 hover:text-gray-900 cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
               <div className="space-y-4">
-                <form
-                  className="hidden lg:block"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setIsClosing(true);
-                    setTimeout(() => {
-                      setIsFilterOpen(false);
-                      setIsClosing(false);
-                    }, 150);
-                  }}
-                >
+                <form className="hidden lg:block">
                   {filters.map((section) => (
                     <Disclosure
                       key={section.id}
@@ -206,8 +202,6 @@ export default function HomePage({
                             {section.name}
                           </span>
                           <span className="ml-6 flex items-center">
-                            {/*<PlusIcon aria-hidden="true" className="size-5 group-data-open:hidden" />
-                          <MinusIcon aria-hidden="true" className="size-5 group-not-data-open:hidden" />*/}
                             <FontAwesomeIcon
                               icon={faChevronDown}
                               className="group-data-open:hidden"
@@ -254,7 +248,7 @@ export default function HomePage({
                                       }
                                     }}
                                     type="checkbox"
-                                    className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
+                                    className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-[#3A73EE] checked:bg-[#3A73EE] indeterminate:border-[#3A73EE] indeterminate:bg-[#3A73EE] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:[#3A73EE] disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
                                   />
                                   <svg
                                     fill="none"
@@ -291,31 +285,46 @@ export default function HomePage({
                     </Disclosure>
                   ))}
                   <div className="flex gap-[15px] items-center">
-                    <button>
-                      <div className="inline-flex items-center cursor-pointer bg-[#3A73EE] text-white rounded-[10px] h-[50px] mt-10 mb-[15px]">
-                        <FontAwesomeIcon
-                          icon={faArrowRight}
-                          className="text-[20px] ml-[24px] mr-[10px]"
-                        />
-                        <p className="text-[20px] font-header font-semibold mr-[24px]">
-                          Sluiten
-                        </p>
-                      </div>
-                    </button>
-                    {selectedCategories.length > 0 || selectedPhases.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedCategories([]);
-                          setSelectedPhases([]);
-                        }}
-                        className="inline-flex items-center cursor-pointer bg-[#5D5D5D] text-white rounded-[10px] h-[50px] mt-10 mb-[15px]"
-                      >
-                        <p className="text-[20px] font-header font-semibold mx-[24px]">
-                          Reset filters
-                        </p>
-                      </button>
-                    )}
+                    <div
+                      className="inline-flex items-center cursor-pointer bg-[#3A73EE] text-white rounded-[10px] h-[50px] mt-10 mb-[15px]"
+                      onClick={
+                        settings.enableAnimations
+                          ? () => {
+                              setIsClosing(true);
+                              setTimeout(() => {
+                                setIsFilterOpen(false);
+                                setIsClosing(false);
+                              }, 150);
+                            }
+                          : () => {
+                              setIsFilterOpen(false);
+                            }
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className="text-[20px] ml-[24px] mr-[10px]"
+                      />
+                      <p className="text-[20px] font-header font-semibold mr-[24px]">
+                        Sluiten
+                      </p>
+                    </div>
+
+                    {selectedCategories.length > 0 ||
+                      (selectedPhases.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategories([]);
+                            setSelectedPhases([]);
+                          }}
+                          className="inline-flex items-center cursor-pointer bg-[#5D5D5D] text-white rounded-[10px] h-[50px] mt-10 mb-[15px]"
+                        >
+                          <p className="text-[20px] font-header font-semibold mx-[24px]">
+                            Reset filters
+                          </p>
+                        </button>
+                      ))}
                   </div>
                 </form>
               </div>

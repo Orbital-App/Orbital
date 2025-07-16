@@ -9,16 +9,19 @@ import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 import useFavorites from "../utils/useFavorites";
+import useSettings from "../utils/useSettings";
 
 export default function ElementDetail() {
   const { symbol } = useParams();
+
+  const { settings } = useSettings();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
   const [imageAvailable, setImageAvailable] = useState(true);
   let category = "onbekend";
-  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   const element = elementsData.elements.find((data) => {
     if (!symbol) return false;
@@ -53,10 +56,6 @@ export default function ElementDetail() {
       </>
     );
   }
-
-  useEffect(() => {
-    console.log("Favorieten:", favorites);
-  }, [favorites]);
 
   category = element.category.toLowerCase();
   const groupMap: { [key: string]: number } = {
@@ -162,20 +161,28 @@ export default function ElementDetail() {
                 </dd>
               </div>
 
-              {element.appearance && (
+              {element.melt && (
                 <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="  font-medium  text-black">Smeltpunt</dt>
                   <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
-                    {element.melt || "Onbekend"} K
+                    {settings.useKelvin
+                      ? (element.melt || "Onbekend") + " K"
+                      : element.melt
+                      ? (element.melt - 273.15).toFixed(2) + " °C"
+                      : "Onbekend"}
                   </dd>
                 </div>
               )}
 
-              {element.appearance && (
+              {element.boil && (
                 <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="  font-medium  text-black">Kookpunt</dt>
                   <dd className="mt-1 text-[#5D5D5D] sm:col-span-2 sm:mt-0">
-                    {element.boil || "Onbekend"} K
+                    {settings.useKelvin
+                      ? (element.boil || "Onbekend") + " K"
+                      : element.boil
+                      ? (element.boil - 273.15).toFixed(2) + " °C"
+                      : "Onbekend"}
                   </dd>
                 </div>
               )}
@@ -220,48 +227,56 @@ export default function ElementDetail() {
           )}
         </div>
 
-        <div className="px-[50px] mt-[40px]">
-          <div className="cursor-grab">
-            <AtomView shells={element.shells} />
+        {settings.enableAtomVisualisation && (
+          <div className="px-[50px] mt-[40px]">
+            <div className="cursor-grab">
+              <AtomView shells={element.shells} />
+            </div>
+            <div className="flex gap-[20px] mt-[20px]">
+              <div className="flex items-center gap-[8px]">
+                <div
+                  className={`rounded-4xl bg-[#882a2a] w-[18px] h-[18px]`}
+                ></div>
+                <p className="font-light font-header text-[20px]">Proton</p>
+              </div>
+              <div className="flex items-center gap-[8px]">
+                <div
+                  className={`rounded-4xl bg-[#585858] w-[18px] h-[18px]`}
+                ></div>
+                <p className="font-light font-header text-[20px]">Neutron</p>
+              </div>
+              <div className="flex items-center gap-[8px]">
+                <div
+                  className={`rounded-4xl bg-[#457a88] w-[18px] h-[18px]`}
+                ></div>
+                <p className="font-light font-header text-[20px]">Elektron</p>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-[20px] mt-[20px]">
-            <div className="flex items-center gap-[8px]">
-              <div
-                className={`rounded-4xl bg-[#882a2a] w-[18px] h-[18px]`}
-              ></div>
-              <p className="font-light font-header text-[20px]">Proton</p>
-            </div>
-            <div className="flex items-center gap-[8px]">
-              <div
-                className={`rounded-4xl bg-[#585858] w-[18px] h-[18px]`}
-              ></div>
-              <p className="font-light font-header text-[20px]">Neutron</p>
-            </div>
-            <div className="flex items-center gap-[8px]">
-              <div
-                className={`rounded-4xl bg-[#457a88] w-[18px] h-[18px]`}
-              ></div>
-              <p className="font-light font-header text-[20px]">Elektron</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50"
-          onClick={() => {
-            setIsClosing(true);
-            setTimeout(() => {
-              setIsModalOpen(false);
-              setIsClosing(false);
-            }, 150);
-          }}
+          onClick={
+            settings.enableAnimations
+              ? () => {
+                  setIsClosing(true);
+                  setTimeout(() => {
+                    setIsModalOpen(false);
+                    setIsClosing(false);
+                  }, 150);
+                }
+              : () => {
+                  setIsModalOpen(false);
+                }
+          }
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         >
           <div
-            className={`bg-white rounded-lg p-6 max-w-2xl max-h-full overflow-auto ${
-              isClosing ? "animate-popup-out" : "animate-popup-in"
+            className={`bg-white rounded-lg p-6 max-w-2xl max-h-full overflow-auto ${ settings.enableAnimations ?
+              isClosing ? "animate-popup-out" : "animate-popup-in" : ""
             }`}
             onClick={(e) => e.stopPropagation()}
           >
@@ -270,13 +285,19 @@ export default function ElementDetail() {
                 Afbeelding van {element.name}
               </h3>
               <button
-                onClick={() => {
-                  setIsClosing(true);
-                  setTimeout(() => {
-                    setIsModalOpen(false);
-                    setIsClosing(false);
-                  }, 150);
-                }}
+                onClick={
+                  settings.enableAnimations
+                    ? () => {
+                        setIsClosing(true);
+                        setTimeout(() => {
+                          setIsModalOpen(false);
+                          setIsClosing(false);
+                        }, 150);
+                      }
+                    : () => {
+                        setIsModalOpen(false);
+                      }
+                }
                 className="text-gray-600 hover:text-gray-900 cursor-pointer"
               >
                 ✕

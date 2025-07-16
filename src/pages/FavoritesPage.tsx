@@ -15,6 +15,7 @@ function FavoritesPage() {
       <div className="flex flex-wrap gap-[10px] mt-[47px] mx-[45px]">
         {element.map((element) => (
           <PeriodicTile
+            key={element.number}
             category={element.category}
             name={element.name}
             symbol={element.symbol}

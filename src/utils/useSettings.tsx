@@ -9,11 +9,11 @@ export type Settings = {
 };
 
 const defaultSettings: Settings = {
-  languageData: "nl",
-  enableAnimations: true,
-  rotationSpeedElektrons: "slow",
-  enableAtomVisualisation: true,
-  useKelvin: true,
+  languageData: "nl", // Nog niet gebruikt
+  enableAnimations: true, // Gebruikt
+  rotationSpeedElektrons: "slow", // Gebruikt
+  enableAtomVisualisation: true, // Gebruikt
+  useKelvin: true, // Gebruikt
 };
 
 export default function useSettings() {
